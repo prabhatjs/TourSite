@@ -5,7 +5,7 @@ const port=3000;
 app.use(express.json());//change all incoming data into json middelware,
     //!request from clinet side---response from server side,status method use for api status code 
     const data=JSON.parse(fs.readFileSync('./data/tourdata.json','utf-8'));//parse the data in json formate 
-    app.get('/api/v1/getTour',(req,res)=>{
+    const getTour=(req,res)=>{
         res.
             status(200)
             .json({
@@ -14,12 +14,12 @@ app.use(express.json());//change all incoming data into json middelware,
                 app:"tourApp",
                 data:data
             });
-        })
-        app.post('/api/v1/getTour',(req,res)=>{
+        }
+        const PostTour=(req,res)=>{
             console.log(req.body);
             res.send('done');
-        })//if u want parameter want to option add ' ? ' this is not getting error
-        app.get('/api/v1/getTour/:id/:id2?',(req,res)=>{
+        }
+        const getTourById=(req,res)=>{
             const id=Number(req.params.id);//change the id into number
             //handling eror of invalid ids---
             if(id>data.length){
@@ -38,7 +38,10 @@ app.use(express.json());//change all incoming data into json middelware,
                 app:"tourApp",
                 data:tour
             });
-        })
+        }
+    app.get('/api/v1/getTour',getTour)
+    app.post('/api/v1/getTour',PostTour)//if u want parameter want to option add ' ? ' this is not getting error
+    app.get('/api/v1/getTour/:id/:id2?',getTourById)
 
 app.listen(port,()=>{
     console.log(`server start on ${port}`);
