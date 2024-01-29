@@ -1,9 +1,25 @@
 const express=require('express');
 const app=express();
 const fs=require('fs');
+const winston=require('winston');
 const port=3000;
 app.use(express.json());//change all incoming data into json middelware,
 //own middelware
+
+const logger=winston.createLogger({
+    level:"info",
+    format:winston.format.json(),
+    transports:[
+        new winston.transports.Console(),
+        new winston.transports.File({filename:"mylog.log"})
+    ]
+});
+
+logger.info("hello winston");
+logger.error("Something went wrong",{
+    error:new Error("something going wrong")
+});
+
 const router=express.Router();
 app.use((req,res,next)=>{
     console.log("hllow from middleware");
@@ -37,18 +53,21 @@ app.use((req,res,next)=>{
         const getTourById=(req,res)=>{
             const id=Number(req.params.id);//change the id into number
             //handling eror of invalid ids---
-            if(id>data.length){
+            console.log(id,data.length);
+            const tour=data.find((tourid)=>
+            tourid.id===id)
+            if(!tour){
                 res.status(404).json({
                     message:"fail",
                     error:"Invalid ID"
                 });
             }
             //find in to json collection data ,find method take cll back function
-            const tour=data.find((tourid)=>
-                    tourid.id===id)
+           
             res.
             status(200)
             .json({
+                requestTime:req.requestTime,
                 message:"Hello From server",
                 app:"tourApp",
                 data:tour
@@ -73,11 +92,11 @@ app.use((req,res,next)=>{
     // app.delete('/api/v1/getTour/:id',DeleteTour);
  // if u want parameter want to option add ' ? ' this is not getting error
 
-        app.route('/api/v1/getTour')
+    app.route('/api/v1/getTour')
         .get(getTour)
         .post(PostTour);
 
-        app.route('/api/v1/getTour/:id')
+       app.route('/api/v1/getTour/:id')
         .get(getTourById)
         .patch(updateTour)
         .delete(DeleteTour);
