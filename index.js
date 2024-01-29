@@ -3,6 +3,7 @@ const app=express();
 const fs=require('fs');
 const port=3000;
 app.use(express.json());//change all incoming data into json middelware,
+const router=express.Router();
     //!request from clinet side---response from server side,status method use for api status code 
     const data=JSON.parse(fs.readFileSync('./data/tourdata.json','utf-8'));//parse the data in json formate 
     const getTour=(req,res)=>{
@@ -39,9 +40,33 @@ app.use(express.json());//change all incoming data into json middelware,
                 data:tour
             });
         }
-    app.get('/api/v1/getTour',getTour)
-    app.post('/api/v1/getTour',PostTour)//if u want parameter want to option add ' ? ' this is not getting error
-    app.get('/api/v1/getTour/:id/:id2?',getTourById)
+
+        const updateTour=(req,res)=>{
+            console.log(req.body);
+            res.send('done');
+        }
+
+        const DeleteTour=(req,res)=>{
+            console.log(req.body);
+            res.send('done');
+        }
+
+    // app.get('/api/v1/getTour',getTour)
+    // app.post('/api/v1/getTour',PostTour)
+    // //if u want parameter want to option add ' ? ' this is not getting error
+    // app.get('/api/v1/getTour/:id/:id2?',getTourById)
+    // app.patch('/api/v1/getTour/:id',updateTour);
+    // app.delete('/api/v1/getTour/:id',DeleteTour);
+ // if u want parameter want to option add ' ? ' this is not getting error
+ 
+        router.route('/api/v1/getTour')
+        .get(getTour)
+        .post(PostTour);
+
+        router.route('/api/v1/getTour/:id')
+        .get(getTourById)
+        .patch(updateTour)
+        .delete(DeleteTour);
 
 app.listen(port,()=>{
     console.log(`server start on ${port}`);
