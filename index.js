@@ -3,13 +3,27 @@ const app=express();
 const fs=require('fs');
 const port=3000;
 app.use(express.json());//change all incoming data into json middelware,
+//own middelware
 const router=express.Router();
+app.use((req,res,next)=>{
+    console.log("hllow from middleware");
+    next();
+});
+
+app.use((req,res,next)=>{
+    req.requestTime=new Date().toISOString();
+    console.log(req.requestTime);
+    next();
+})
+
+
     //!request from clinet side---response from server side,status method use for api status code 
     const data=JSON.parse(fs.readFileSync('./data/tourdata.json','utf-8'));//parse the data in json formate 
     const getTour=(req,res)=>{
         res.
             status(200)
             .json({
+                requestTime:req.requestTime,
                 result:data.length,//length of data
                 message:"Hello From server",
                 app:"tourApp",
@@ -58,12 +72,12 @@ const router=express.Router();
     // app.patch('/api/v1/getTour/:id',updateTour);
     // app.delete('/api/v1/getTour/:id',DeleteTour);
  // if u want parameter want to option add ' ? ' this is not getting error
- 
-        router.route('/api/v1/getTour')
+
+        app.route('/api/v1/getTour')
         .get(getTour)
         .post(PostTour);
 
-        router.route('/api/v1/getTour/:id')
+        app.route('/api/v1/getTour/:id')
         .get(getTourById)
         .patch(updateTour)
         .delete(DeleteTour);
