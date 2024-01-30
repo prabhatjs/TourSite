@@ -54,18 +54,16 @@ app.use((req,res,next)=>{
             const id=Number(req.params.id);//change the id into number
             //handling eror of invalid ids---
             console.log(id,data.length);
-            const tour=data.find((tourid)=>
-            tourid.id===id)
+            const tour=data.find((tourid)=>tourid.id===id)
             if(!tour){
-                res.status(404).json({
+               return res.status(404).json({
                     message:"fail",
-                    error:"Invalid ID"
+                    error:"Invalid ID",
+                    data:{}
                 });
             }
             //find in to json collection data ,find method take cll back function
-           
-            res.
-            status(200)
+            res.status(200)
             .json({
                 requestTime:req.requestTime,
                 message:"Hello From server",
@@ -90,16 +88,18 @@ app.use((req,res,next)=>{
     // app.get('/api/v1/getTour/:id/:id2?',getTourById)
     // app.patch('/api/v1/getTour/:id',updateTour);
     // app.delete('/api/v1/getTour/:id',DeleteTour);
+
  // if u want parameter want to option add ' ? ' this is not getting error
 
-    app.route('/api/v1/getTour')
-        .get(getTour)
-        .post(PostTour);
 
-       app.route('/api/v1/getTour/:id')
-        .get(getTourById)
-        .patch(updateTour)
-        .delete(DeleteTour);
+
+ //!formating the code 
+
+    const tourRouter=express.Router();
+    //use middelware to short path
+    app.use('/api/v1/getTour',tourRouter);
+    tourRouter.route('/').get(getTour).post(PostTour);
+    tourRouter.route('/:id').get(getTourById).patch(updateTour).delete(DeleteTour);
 
 app.listen(port,()=>{
     console.log(`server start on ${port}`);
