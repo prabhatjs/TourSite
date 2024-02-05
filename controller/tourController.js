@@ -31,6 +31,23 @@ const getTour=async(req,res)=>{
         {
             gettourdata=gettourdata.sort(req.query.sort)
         }
+        //limiting the fileds--->http://localhost:8000/api/v1/getTour?field=name,duration,price pass like this
+       // field=name,duration,price
+        if(req.query.field){
+            const field=req.query.field.split(',').join(' ');
+            gettourdata.select(field);
+        }else{
+            gettourdata=gettourdata.select('');
+        }
+        //pagination
+
+        const page=req.query.page;//page=1
+        const limit=req.query.limit;//limit=2
+        const skip=(page-1)*limit;  
+
+        gettourdata=gettourdata.skip(skip).limit(limit);
+
+
         const tours = await gettourdata;
         res.status(200).json({
             result:gettourdata.length,
