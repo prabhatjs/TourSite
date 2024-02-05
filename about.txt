@@ -1,6 +1,12 @@
 express
 npm i winston for logging file and error
+dotenv of handling enviorment variables --//npm run start
+mongoose for connection with db odm.
 ?Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client?
 if you getting this error it means you are send multiple response for one resource.
 you can use send only one res at one route.
 or you can use return statement.
+
+?param middleware?
+only runs certion parameters
+--tourcontroller-
