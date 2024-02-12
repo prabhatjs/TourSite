@@ -1,5 +1,5 @@
 const express=require('express');
-const {getTour,getTourById,PostTour,DeleteTour,updateTour,topcheapTour,mostHigestPrice}=require('../controller/tourController')
+const {getTour,getTourById,PostTour,DeleteTour,updateTour,topcheapTour,mostHigestPrice,getTourStatus}=require('../controller/tourController')
 
 const tourRouter=express.Router();
 //[param middleware,val hold value of id]
@@ -10,6 +10,7 @@ const tourRouter=express.Router();
     //more route about best tour ,chippest tour,best rating more- or ek middelware function hoga controller me 
     tourRouter.route('/bestchipesttour').get(topcheapTour,getTour);
     tourRouter.route('/pricehighlow').get(mostHigestPrice,getTour);
+    tourRouter.route('/aggrigate').get(getTourStatus)
     tourRouter.route('/')
     .get(getTour)
     .post(PostTour); 
@@ -18,5 +19,4 @@ tourRouter.route('/:id')
  .get(getTourById)
  .patch(updateTour)
  .delete(DeleteTour);
-
  module.exports=tourRouter;
