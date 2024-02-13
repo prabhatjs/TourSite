@@ -146,11 +146,12 @@ const getTour=async(req,res)=>{
     const getTourStatus= async(req,res)=>{
             try {
                 const stats= await tour.aggregate([
-                    {
-                        $match:{ratingsAverage:{$gte:4.5}}
+                    {   
+                        $match:{ratingsAverage:{$gte:4}}
                     },{
                         $group:{
-                            _id:null,
+                            noTour:{$sum:1},
+                            _id:'$difficulty',
                             avgRating:{$avg:'$ratingsAverage'},
                             avgPrice:{$avg:'$price'},
                             minPrice:{$min:'$price'},
@@ -172,6 +173,40 @@ const getTour=async(req,res)=>{
                 })
             }
     }
+    //find the besy month of the tour every tour has 3 starting date find which month have max number of tour..
+        const BusyMonth=async (req,res)=>{
+           try {
+            const year=req.params.year*1;
+            const plan=await tour.aggregate([
+                 {
+                    $unwind:'$startDates'//if one array contain multiple value unwind help to seprate ,destructure
+                 },
+                 {
+                 $match:
+                 {
+                    startDates:
+                    {
+                        $gte:new Date(`${year}-01-01`),
+                        $lte:new Date(`${year}-12-31`)
+                    }
+                 }
+                }])
+            res.status(200).json({
+                message:"Success get Aggrgate",
+                data:{
+                    plan
+                }
+               });
+           } catch (error) {
+            res.status(404).json({
+                message:"Aggrigation fail",
+                data:{},
+                error:error
+            })
+           }
+        }
     module.exports={
-        getTour,getTourById,DeleteTour,PostTour,updateTour,topcheapTour,mostHigestPrice,getTourStatus
+        getTour,getTourById,DeleteTour,PostTour,
+        updateTour,topcheapTour,mostHigestPrice,
+        getTourStatus,BusyMonth
     }
